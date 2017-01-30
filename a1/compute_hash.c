@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 // Hash manipulation functions in hash_functions.c
 void hash(char *hash_val, long block_size);
@@ -38,9 +38,35 @@ void show_hash(char *hash_val, long block_size) {
 
 
 int main(int argc, char **argv) {
-    char hash_val[MAX_BLOCK_SIZE] = {'\0'};
+    char hash_val[MAX_BLOCK_SIZE] = {'\0'}; // used for input
+    char hash_val2[MAX_BLOCK_SIZE] = {'\0'}; // used for second argument
     long block_size;
 
+    if(argc < 2 || argc > 3){
+        printf("Usage: compute_hash BLCOK_SIZE [ COMPARISON_HASH ]\n");
+        exit(0);
+    }else{
+        block_size = atoi(argv[1]);
+    }
+    if(block_size < 0 || block_size > MAX_BLOCK_SIZE){
+        printf("The block size should be a positive integer less than MAX_BLOCK_SIZE\n");
+        exit(1);
+    }
+    hash(hash_val, block_size);
+    if(argc == 3){
+        if(strlen(argv[2]) == block_size*2){
+            // convert argv to hash value first
+            xstr_to_hash(hash_val2, argv[2], block_size);
+            // check the hash value in two inputs.
+            check_hash(hash_val, hash_val2, block_size);
+        }else{
+            printf("You do not have valid hash value to compare (Undefined)\n");
+            exit(2);
+        }
+    }else{
+        printf("No need to compare\n");
+        exit(3);
+    }
     return 0;
 }
 
