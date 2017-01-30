@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
     char hash_val[MAX_BLOCK_SIZE] = {'\0'}; // used for input
     char hash_val2[MAX_BLOCK_SIZE] = {'\0'}; // used for second argument
     long block_size;
+    int result = 0;
 
     if(argc < 2 || argc > 3){
         printf("Usage: compute_hash BLCOK_SIZE [ COMPARISON_HASH ]\n");
@@ -53,12 +54,16 @@ int main(int argc, char **argv) {
         exit(1);
     }
     hash(hash_val, block_size);
+    printf("The hash value of input = ");
+    show_hash(hash_val, block_size);
     if(argc == 3){
         if(strlen(argv[2]) == block_size*2){
+            printf("The hash value of argv[2] = ");
             // convert argv to hash value first
             xstr_to_hash(hash_val2, argv[2], block_size);
+            show_hash(hash_val2, block_size);
             // check the hash value in two inputs.
-            check_hash(hash_val, hash_val2, block_size);
+            result = check_hash(hash_val, hash_val2, block_size);
         }else{
             printf("You do not have valid hash value to compare (Undefined)\n");
             exit(2);
@@ -67,6 +72,8 @@ int main(int argc, char **argv) {
         printf("No need to compare\n");
         exit(3);
     }
+    printf("The result of the comparison is %d\n", result);
+
     return 0;
 }
 
