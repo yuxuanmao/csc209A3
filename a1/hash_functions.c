@@ -8,7 +8,7 @@ void hash(char *hash_val, long block_size) {
 	char* input;
 	input = malloc(sizeof(char)*1024); // give the maximum number of characters can store in input.
 	// we need to check whether the input is file name or stdin.
-	while(fscanf(stdin, "%s", input) != EOF){
+	while(scanf("%s", input) != EOF){
 		// convert input to unsigned int representation
 		unsigned int* inchar; // list of unsigned int for each character.
 		inchar = malloc(sizeof(unsigned int)*strlen(input));
