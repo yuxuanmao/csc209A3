@@ -3,12 +3,19 @@
 #include <string.h>
 
 // Complete these two functions according to the assignment specifications
-#define BUFFER_SIZE 1024
 void hash(char *hash_val, long block_size) {
 	char* input;
-	input = malloc(sizeof(char)*1024); // give the maximum number of characters can store in input.
+	input = malloc(sizeof(char)*6); // give the maximum number of characters can store in input.
+	int count = 1; // used to count how many time we have realloc to char* input
+
 	// we need to check whether the input is file name or stdin.
-	while(scanf("%s", input) != EOF){
+	while(scanf("%[^EOF]", input) != EOF){
+		// determine whether we need to add more space for char* input to receive all input.
+		if(strlen(input) >= 5*count){
+			input = realloc(input, 5);
+			count ++;
+		}
+
 		// convert input to unsigned int representation
 		unsigned int* inchar; // list of unsigned int for each character.
 		inchar = malloc(sizeof(unsigned int)*strlen(input));
@@ -31,6 +38,7 @@ void hash(char *hash_val, long block_size) {
 		free(inchar);
 	}
 	free(input);
+	printf("\n-----Input is end -----\n");
 }
 
 
