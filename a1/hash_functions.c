@@ -9,7 +9,7 @@ void hash(char *hash_val, long block_size) {
 	int count = 1; // used to count how many time we have realloc to char* input
 
 	// we need to check whether the input is file name or stdin.
-	while(scanf("%[^EOF]", input) != EOF){
+	while(scanf("%[^\x04]", input) != EOF){
 		// determine whether we need to add more space for char* input to receive all input.
 		if(strlen(input) >= 5*count){
 			input = realloc(input, 5);
