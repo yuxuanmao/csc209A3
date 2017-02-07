@@ -38,7 +38,7 @@ void hash(char *hash_val, long block_size) {
 		free(inchar);
 	}
 	free(input);
-	printf("\n-----Input is end -----\n");
+	
 }
 
 

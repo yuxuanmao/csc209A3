@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
     hash(hash_val, block_size);
+    printf("\n---- End of Input --------\n");
     printf("The hash value of input = ");
     show_hash(hash_val, block_size);
     if(argc == 3){
