@@ -45,9 +45,10 @@ void hash(char *hash_val, long block_size) {
 int check_hash(const char *hash1, const char *hash2, long block_size) {
     // A place holder so that the file will compile without error.
 	// Replace with the correct return value.
+	// hash2 is the second argument and hash1 is the input
 	int hash2len = strlen(hash2);
 	if(hash2len < block_size){
-		printf("this is not valid hash2\n");
+		// "this is not valid hash2;
 		exit(0);
 	}else{
 		for(int i=0; i<block_size; i++){
