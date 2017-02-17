@@ -27,6 +27,15 @@ int compare_names(const void *n1, const void *n2) {
 
 	// TODO Cast the arguments to the appropriate type to compare
 	// the name field of the dirent structs passed as argumnents n1 and n2
+	const struct dirent* argv1 = n1;
+	const struct dirent* argv2 = n2;
+	if(strcmp(argv1->d_name, argv2->d_name) == 0){
+		return 0;
+	}else if(strcmp(argv1->d_name, argv2->d_name) < 0){
+		return 1; // n1 is smaller than n2
+	}else if(strcmp(argv1->d_name, argv2->d_name) > 0){
+		return -1; // n1 is larger than n2
+	}
 
 	// TODO: return the result of the comparision.
 
@@ -74,6 +83,19 @@ int main(int argc, char **argv) {
 
 	 // TODO: Add the code to populate the array with directory entries.
 	 // Tip: "man readdir"
+	 i = 0;
+	 while(i != MAXDIRS){
+	 	dp = readdir(dirp);
+	 	if(dp == NULL){
+	 		break;
+	 	}
+	 	if(dp->d_name[0] != '.'){
+	 		dirs[i] = *dp;
+	 		i++;
+	 	}
+	 	
+	 	
+	 }
 
 	if(i == MAXDIRS && dp != NULL) {
 		fprintf(stderr, 
@@ -81,10 +103,10 @@ int main(int argc, char **argv) {
 	}
 	closedir(dirp);
 	
-	
 	// Sort dirs by name in descending alphabetical order
 	// TODO: call qsort with the appropriate arguments to sort the array of
 	// struct dirents
+	qsort(&dirs, i, sizeof(struct dirent), compare_names);
 
 	printf("List the directory entries sorted in descending order:\n");
 	show_dirs(dirs, i);
