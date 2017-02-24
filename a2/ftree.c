@@ -80,7 +80,7 @@ struct TreeNode *generate_ftree(const char *fname) {
 	        		// we find the parent (parent_path) of this direcotry
 	        		char* parent_path = generate_name(fname);
 	        		// then we check if the previous node is the parent directory or not
-	        		if(strstr(parent_path, (*nxtFLE)->fname) != NULL){
+	        		if(strstr(parent_path, (*nxtFLE)->fname) != NULL && (*nxtFLE)->hash == NULL){
 	        			// if the parent node is a direcotry we use contents
 	        			nxtFLE = &((*nxtFLE)->contents);
 	        		}else{
@@ -94,7 +94,7 @@ struct TreeNode *generate_ftree(const char *fname) {
 	        		// we find the parent (parent_path) of this file or link
 	        		char* parent_path = generate_name(fname);
 	        		// then we check if the previous node is the parent directory or not
-	        		if(strstr(parent_path, (*nxtFLE)->fname) != NULL){
+	        		if(strstr(parent_path, (*nxtFLE)->fname) != NULL && (*nxtFLE)->hash == NULL){
 	        			// if the parent node is a direcotry we use contents
 	        			nxtFLE = &((*nxtFLE)->contents);
 	        		}else{
@@ -160,33 +160,20 @@ void print_ftree(struct TreeNode *root) {
     	depth++;
     	if(root->hash == NULL){
     		printf("==== %s (%o) ====\n", root->fname, root->permissions);
-    		//printf("%s has ", root->fname);
     		if(root->next == NULL && root->contents == NULL){
     			depth--;
     		}
     	}else{
-    		printf("%s (%o)\n", root->fname, root->permissions);
+    		printf("%s (%o) \n", root->fname, root->permissions);
     		if(root->next == NULL && root->contents == NULL){
     			depth--;
     		}
     	}
-    	// if(root->contents != NULL){
-    	// 	printf("contents %s and ", root->contents->fname);
-    	// }
-    	// if(root->next != NULL){
-    	// 	printf("next %s", root->next->fname);	
-    	// }
-    	// printf("\n");
     	if(root->contents != NULL){
-    		//printf("CONTENTS = ");
-    		//depth--;
-    		
     		print_ftree(root->contents);
     	}
     	if(root->next != NULL){
     		depth--;
-    		//printf("NEXT = ");
-    		
     		print_ftree(root->next);
     	}
 
