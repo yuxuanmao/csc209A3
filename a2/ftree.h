@@ -23,6 +23,8 @@ struct TreeNode {
  * information about the files in a file system. A FTree is represented by
  * a single TreeNode which is the root of the tree.
  */
+// help function
+char* generate_name(const char* path);
 
 // Function for generating a FTree given a root filename.
 struct TreeNode *generate_ftree(const char *fname);
