@@ -10,6 +10,10 @@ char* hash(FILE* f){
 	char* hash_val;
 	hash_val = malloc(sizeof(char)*9);
 	hash_val[0] = '\0';
+	if(f == NULL){
+		hash_val = "\0\0\0\0\0\0\0\0";
+		return hash_val;
+	}
 	while(fread(&buffer, 1, 1, f) == 1){
 		// convert input to unsigned int representation
 		unsigned int inchar; // list of unsigned int for each character.

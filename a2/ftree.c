@@ -38,7 +38,9 @@ struct TreeNode *generate_ftree(const char *fname) {
     	top->hash = hash(fp);
     	top->next = NULL;
     	free(buf);
-    	fclose(fp);
+    	if(fp != NULL){
+    		fclose(fp);
+    	}
     	return top;
     }else if(S_ISDIR(buf->st_mode) != 0){
 		// the buf is directory
@@ -48,6 +50,10 @@ struct TreeNode *generate_ftree(const char *fname) {
     	top->hash = NULL;
     	top->contents = NULL;
     	top->next = NULL;
+    	// before open the direcotry we need to check permissions
+    	if(top->permissions == 000){
+    		return top;
+    	}
     	// we create a pointer to struct TreeNode* so that we can keep node of root
     	struct TreeNode** nxtFLE;
     	nxtFLE = &(top);
@@ -73,7 +79,7 @@ struct TreeNode *generate_ftree(const char *fname) {
 	        	path[strlen(fname)] = '/';
 	        	path[strlen(fname)+1] = '\0';
 	        	strncat(path, dp->d_name, strlen(dp->d_name));
-
+	        	
 	        	if(dp->d_type == DT_DIR){
 	        		// this is Direcotry
 	        		
