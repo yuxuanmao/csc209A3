@@ -21,9 +21,12 @@ struct TreeNode *generate_ftree(const char *fname) {
     struct stat* buf;
     buf = malloc(sizeof(struct stat));
     if(lstat(fname, buf) != 0){
+    	// checking the error of lstat
     	perror("lstat");
     	exit(1);
     }
+
+
     if(S_ISREG(buf->st_mode) != 0 || S_ISLNK(buf->st_mode) != 0){
     	// this is file or link
     	top->fname = malloc(sizeof(char)*strlen(fname)+1);
@@ -35,10 +38,12 @@ struct TreeNode *generate_ftree(const char *fname) {
     	top->contents = NULL;
     	FILE* fp;
     	fp = fopen(fname, "r");
+    	// if fp is NULL we will get 00000000 for the hash
     	top->hash = hash(fp);
     	top->next = NULL;
     	free(buf);
     	if(fp != NULL){
+    		// we close file only if the fopen succeeded to open the file
     		fclose(fp);
     	}
     	return top;
@@ -52,6 +57,8 @@ struct TreeNode *generate_ftree(const char *fname) {
     	top->next = NULL;
     	// before open the direcotry we need to check permissions
     	if(top->permissions == 000){
+    		// if the user has no permission to access to the content of the directory
+    		// we do not need to open directory anymore.
     		return top;
     	}
     	// we create a pointer to struct TreeNode* so that we can keep node of root
@@ -80,37 +87,16 @@ struct TreeNode *generate_ftree(const char *fname) {
 	        	path[strlen(fname)+1] = '\0';
 	        	strncat(path, dp->d_name, strlen(dp->d_name));
 	        	
-	        	if(dp->d_type == DT_DIR){
-	        		// this is Direcotry
-	        		
-	        		// we find the parent (parent_path) of this direcotry
-	        		char* parent_path = generate_name(fname);
-	        		// then we check if the previous node is the parent directory or not
-	        		if(strstr(parent_path, (*nxtFLE)->fname) != NULL && (*nxtFLE)->hash == NULL){
-	        			// if the parent node is a direcotry we use contents
-	        			nxtFLE = &((*nxtFLE)->contents);
-	        		}else{
-	        			nxtFLE = &((*nxtFLE)->next);
-	        		}
-	        		*nxtFLE = malloc(sizeof(struct TreeNode*));
-	        		*nxtFLE = generate_ftree(path);
-	        	}else{
-	        		// this is file or link
+	        	// we find th parent node's name of the current node
+	        	char* parent_path = generate_name(fname);
+	        	// check if the prevuious node 
+	        	nxtFLE = contents_or_next(*nxtFLE, parent_path);;
+        		*nxtFLE = malloc(sizeof(struct TreeNode*));
+        		*nxtFLE = generate_ftree(path);
 
-	        		// we find the parent (parent_path) of this file or link
-	        		char* parent_path = generate_name(fname);
-	        		// then we check if the previous node is the parent directory or not
-	        		if(strstr(parent_path, (*nxtFLE)->fname) != NULL && (*nxtFLE)->hash == NULL){
-	        			// if the parent node is a direcotry we use contents
-	        			nxtFLE = &((*nxtFLE)->contents);
-	        		}else{
-	        			nxtFLE = &((*nxtFLE)->next);
-	        		}
-	        		
-	        		*nxtFLE = malloc(sizeof(struct TreeNode*));
-	        		*nxtFLE = generate_ftree(path);
-	        		strcpy((*nxtFLE)->fname, generate_name(path));
-	        		
+	        	if(dp->d_type != DT_DIR){
+	        		// this is file or link
+	        		strcpy((*nxtFLE)->fname, generate_name(path));	
 	        	}
 	        	free(path);
 	        }
@@ -150,6 +136,19 @@ char* generate_name(const char* path){
 	}
 	return result;
 
+}
+
+/*
+ This is the helper function that is used to determine the current TreeNode
+ will point to contents or next TreeNode
+*/
+struct TreeNode** contents_or_next(struct TreeNode* current, char* previous){
+	if(strstr(previous, current->fname) != NULL && current->hash == NULL){
+		// if the parent node is a direcotry we use contents
+		return &(current->contents);
+	}else{
+		return &(current->next);
+	}
 }
 
 

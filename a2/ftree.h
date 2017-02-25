@@ -26,6 +26,8 @@ struct TreeNode {
 // help function
 char* generate_name(const char* path);
 
+struct TreeNode** contents_or_next(struct TreeNode* current, char* previous);
+
 // Function for generating a FTree given a root filename.
 struct TreeNode *generate_ftree(const char *fname);
 
