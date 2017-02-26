@@ -96,6 +96,7 @@ struct TreeNode *generate_ftree(const char *fname) {
 
 	        	if(dp->d_type != DT_DIR){
 	        		// this is file or link
+	        		// then we need to generate the file name from the full path
 	        		strcpy((*nxtFLE)->fname, generate_name(path));	
 	        	}
 	        	free(path);
@@ -164,22 +165,30 @@ void print_ftree(struct TreeNode *root) {
     if(root != NULL){
     	depth++;
     	if(root->hash == NULL){
+    		
     		printf("==== %s (%o) ====\n", root->fname, root->permissions);
     		if(root->next == NULL && root->contents == NULL){
     			depth--;
     		}
+
     	}else{
     		printf("%s (%o) \n", root->fname, root->permissions);
-    		if(root->next == NULL && root->contents == NULL){
+    		if(root->next == NULL ){
     			depth--;
     		}
     	}
     	if(root->contents != NULL){
     		print_ftree(root->contents);
+    		if(root->next == NULL && root->contents != NULL){
+				depth--;
+    			
+    		}
     	}
     	if(root->next != NULL){
     		depth--;
+
     		print_ftree(root->next);
+
     	}
 
     }
