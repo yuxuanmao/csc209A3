@@ -34,7 +34,49 @@ int main(void) {
     printf("Password:\n");
     scanf("%s", password);
 
-	
+	int p[2];
+
+    if(pipe(p)){
+        fprintf(stderr, "pipe failed. \n");
+        return EXIT_FAILURE;
+    }
+
+    pid_t r;
+    r = fork();
+    if(r > 0){
+        close(p[0]);
+        // write
+        write(p[1], userid, 10);
+        write(p[1], password, 10);
+        close(p[1]);
+
+        int status;
+        if (wait(&status) != -1)  {
+            if (WIFEXITED(status)) {
+                if(WEXITSTATUS(status) == 0){
+                    printf(VERIFIED);
+                }else if(WEXITSTATUS(status) == 2){
+                    printf(BAD_PASSWORD);
+                }else if(WEXITSTATUS(status) == 3){
+                    printf(BAD_USER);
+                }else if(WEXITSTATUS(status) == 1){
+                    printf(OTHER);
+                }
+            } else {
+                printf("[%d] Child exited abnormally\n", getpid());
+            } 
+        }  
+    }else if(r == 0){
+        
+        close(p[1]);
+        dup2(p[0], STDIN_FILENO);
+        close(p[0]);
+        execlp("./validate", "./validate", NULL);
+
+    }else{
+        perror("fork has error");
+        exit(0);
+    }
 
     return 0;
 }
